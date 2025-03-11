@@ -75,6 +75,7 @@ class UDPStream:
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
         self.cap.set(cv2.CAP_PROP_FPS, fps)
+        self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
         print(f"[{self.id}] Camera {camera_id} opened with {width}x{height} at {fps} fps")
         
     def get_frame(self):

@@ -5,11 +5,12 @@ import time
 
 HOST = "192.168.0.115" 
 PORT = 5000
+ID = "UMI_GRIPPER_LEFT"
 
-udp_sender = UDPStream("UMI_GRIPPER_LEFT", HOST, PORT, mode="send")
+udp_sender = UDPStream(ID, HOST, PORT, mode="send")
 
 udp_sender.open_camera()
-print("UMI-Gripper Left Streaming now...")
+print(f"[{ID}] UMI-Gripper Left Streaming now...")
 udp_sender.start_send_thread()
 
 try:
@@ -21,7 +22,7 @@ try:
         time.sleep(0.5)
 
 except KeyboardInterrupt:
-    print("Stopping UMI-Gripper Left Streaming...")
+    print(f"[{ID}] Stopping UMI-Gripper Left Streaming...")
     udp_sender.stop_send_thread()
     udp_sender.close_camera()
 
