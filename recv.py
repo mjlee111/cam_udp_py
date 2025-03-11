@@ -9,7 +9,7 @@ PORT = 5000
 udp_receiver = None
 
 try:
-    udp_receiver = UDPStream(HOST, PORT, mode="recv")
+    udp_receiver = UDPStream("UMI_GRIPPER_LEFT", HOST, PORT, mode="recv")
     udp_receiver.start_recv_thread()    
 
     while True:
@@ -27,6 +27,10 @@ try:
         except Exception as e:
             print(f"Error processing frame: {e}")
             continue
+        
+        except KeyboardInterrupt:
+            print("Stopping application...")
+            break
 
 except Exception as e:
     print(f"Error in main loop: {e}")

@@ -1,26 +1,27 @@
 import cv2
 from udp_stream import UDPStream
 import psutil
+import time
 
 HOST = "192.168.0.115" 
 PORT = 5000
 
-udp_sender = UDPStream(HOST, PORT, mode="send")
+udp_sender = UDPStream("UMI_GRIPPER_LEFT", HOST, PORT, mode="send")
 
 udp_sender.open_camera()
 print("UMI-Gripper Left Streaming now...")
+udp_sender.start_send_thread()
 
-while True:
-    frame = udp_sender.get_frame()
-    if frame is None:
-        continue
-    
-    frame = cv2.resize(frame, (640, 240))
-    udp_sender.send_frame(frame)
-    
-    cpu_temp = psutil.sensors_temperatures()['cpu_thermal'][0].current
-    cpu_load = psutil.cpu_percent(interval=1)
-    print(f"temp: [C] {cpu_temp}")
-    print(f"load: [%] {cpu_load}")
+try:
+    while True:
+        cpu_temp = psutil.sensors_temperatures()['cpu_thermal'][0].current
+        cpu_load = psutil.cpu_percent(interval=1)
+        print(f"temp: [C] {cpu_temp}")
+        print(f"load: [%] {cpu_load}")
+        time.sleep(0.5)
 
-udp_sender.close_camera()
+except KeyboardInterrupt:
+    print("Stopping UMI-Gripper Left Streaming...")
+    udp_sender.stop_send_thread()
+    udp_sender.close_camera()
+
