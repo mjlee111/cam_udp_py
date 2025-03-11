@@ -25,9 +25,9 @@ while True:
     frame = cv2.resize(frame, (640, 240))
     udp_sender.send_frame(frame)  
 
-    cv2.imshow("Sending", frame)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+    # cv2.imshow("Sending", frame)
+    # if cv2.waitKey(1) & 0xFF == ord('q'):
+    #     break
 
 cap.release()
-cv2.destroyAllWindows()
+# cv2.destroyAllWindows()
