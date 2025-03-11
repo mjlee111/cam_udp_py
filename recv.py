@@ -1,0 +1,18 @@
+import cv2
+from udp_stream import UDPStream
+
+HOST = "localhost" 
+PORT = 5000
+
+udp_receiver = UDPStream(HOST, PORT, mode="recv")
+
+while True:
+    frame = udp_receiver.recv_frame()  
+    if frame is None:
+        continue
+
+    cv2.imshow("Receiving", frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cv2.destroyAllWindows()
