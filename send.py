@@ -1,7 +1,7 @@
 import cv2
 from udp_stream import UDPStream
 
-HOST = "localhost" 
+HOST = "192.168.0.115" 
 PORT = 5000
 
 udp_sender = UDPStream(HOST, PORT, mode="send")
@@ -15,6 +15,7 @@ else:
 
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+cap.set(cv2.CAP_PROP_FPS, 15)
 
 while True:
     ret, frame = cap.read()

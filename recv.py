@@ -1,7 +1,7 @@
 import cv2
 from udp_stream import UDPStream
 
-HOST = "localhost" 
+HOST = "192.168.0.115" 
 PORT = 5000
 
 udp_receiver = UDPStream(HOST, PORT, mode="recv")
