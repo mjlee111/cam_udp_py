@@ -2,6 +2,7 @@ import cv2
 import socket
 import struct
 import numpy as np
+import threading
 
 class UDPStream:
     def __init__(self, host, port, mode="send"):
@@ -11,7 +12,26 @@ class UDPStream:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         
         if mode == "recv":
+            print("UDP receiver node initialized")
             self.sock.bind((host, port))
+            self.frame = None
+            self.recv_thread = None
+            self.running = False
+        else:
+            print("UDP sender node initialized")
+
+    def start_recv_thread(self):
+        print("Starting UDP receiver thread")
+        self.running = True
+        self.recv_thread = threading.Thread(target=self.recv_frame)
+        self.recv_thread.start()
+        
+    def stop_recv_thread(self):
+        print("Stopping UDP receiver thread")
+        if self.recv_thread:
+            self.running = False
+            self.recv_thread.join()
+            self.recv_thread = None
 
     def send_frame(self, frame):
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
@@ -19,12 +39,13 @@ class UDPStream:
         self.sock.sendto(buffer.tobytes(), (self.host, self.port))
 
     def recv_frame(self):
-        data, _ = self.sock.recvfrom(65536)
-        np_arr = np.frombuffer(data, dtype=np.uint8)
-        frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
-        return frame
-    
+        while self.running:
+            data, _ = self.sock.recvfrom(65536)
+            np_arr = np.frombuffer(data, dtype=np.uint8)
+            self.frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+
     def open_camera(self, camera_id=0, width=1280, height=480, fps=15):
+        print(f"Trying to open camera {camera_id}")
         self.cap = cv2.VideoCapture(0)
         if not self.cap.isOpened():
             print("Failed to open camera.")
@@ -44,5 +65,5 @@ class UDPStream:
 
     def close_camera(self):
         self.cap.release()
-            
+        print("Camera closed")
             
