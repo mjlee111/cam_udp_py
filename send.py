@@ -6,28 +6,15 @@ PORT = 5000
 
 udp_sender = UDPStream(HOST, PORT, mode="send")
 
-cap = cv2.VideoCapture(0)  
-if cap.isOpened():
-    print(f"Successfully opened camera {0}")
-else:
-    print("Failed to open camera.")
-    exit()
-
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-cap.set(cv2.CAP_PROP_FPS, 15)
+udp_sender.open_camera()
+print("UMI-Gripper Left Streaming now...")
 
 while True:
-    ret, frame = cap.read()
-    if not ret:
-        break
+    frame = udp_sender.get_frame()
+    if frame is None:
+        continue
     
     frame = cv2.resize(frame, (640, 240))
-    udp_sender.send_frame(frame)  
+    udp_sender.send_frame(frame)
 
-    # cv2.imshow("Sending", frame)
-    # if cv2.waitKey(1) & 0xFF == ord('q'):
-    #     break
-
-cap.release()
-# cv2.destroyAllWindows()
+udp_sender.close_camera()
