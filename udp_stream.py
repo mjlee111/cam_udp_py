@@ -14,7 +14,7 @@ class UDPStream:
             self.sock.bind((host, port))
 
     def send_frame(self, frame):
-        encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 100]
+        encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
         _, buffer = cv2.imencode(".jpg", frame, encode_param)
         self.sock.sendto(buffer.tobytes(), (self.host, self.port))
 
